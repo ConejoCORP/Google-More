@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Google More — banc d'essai du popup</title>
+  <link rel="stylesheet" href="../popup.css">
+</head>
+<body>
+  <script>
+    // Banc d'essai : affiche le vrai popup hors extension, avec une fausse API chrome.
+    // Onglet Titres YouTube, rapport calculé par titles.js à partir d'une réponse Gemini simulée.
+    // http://127.0.0.1:8766/test/popup-harness.html
+    const TITLES = [
+      "J'ai tout acheté sur les Jeux les plus Pay2Win de Roblox...",
+      "J'ai Joué au Jeux les plus PAY TO WIN de Roblox..",
+      'J’ai Joué aux Jeux les Plus CHER de Roblox…'
+    ];
+    const ANSWER = JSON.stringify({ titres: [
+      { n: 1, ok: true, corrige: TITLES[0], explication: '' },
+      { n: 2, ok: false, corrige: "J'ai joué aux jeux les plus PAY TO WIN de Roblox...", explication: '« au » devient « aux » devant un nom pluriel.' },
+      { n: 3, ok: false, corrige: 'J’ai joué aux jeux les plus chers de Roblox…', explication: '« cher » s’accorde avec « jeux ».' }
+    ] });
+    const job = { id: 1, kind: 'titles', status: 'done', finishedAt: Date.now(), result: ANSWER, report: null,
+      applied: { replaced: 2, missing: [], where: 'le test A/B de YouTube Studio', total: 2 } };
+
+    // ?stale=1 : simule un service worker pas rechargé (il ne répond à aucun message).
+    const STALE = new URLSearchParams(location.search).has('stale');
+    const runtime = {
+      id: 'banc-d-essai',
+      lastError: null,
+      reload: () => { document.title = 'rechargement demandé'; },
+      sendMessage: (m, cb) => {
+        if (!cb) return;
+        if (STALE) {
+          runtime.lastError = { message: 'The message port closed before a response was received.' };
+          cb(undefined);
+          runtime.lastError = null;
+          return;
+        }
+        cb(m.type === 'gm-build' ? { build: globalThis.GM_BUILD } : { ok: true });
+      }
+    };
+
+    window.chrome = {
+      runtime,
+      storage: {
+        sync: { get: (d, cb) => cb({ ...d }), set: () => {} },
+        session: { get: (k, cb) => cb({ gmJob: job }), set: () => {} },
+        onChanged: { addListener() {} }
+      },
+      tabs: { query: async () => [{ id: 1, url: 'https://studio.youtube.com/video/x/edit', title: 'YouTube Studio' }] },
+      scripting: { executeScript: async () => [{ result: { titles: TITLES, where: 'le test A/B de YouTube Studio', inDialog: true } }] }
+    };
+
+    const load = (src) => new Promise((ok, ko) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = ok; s.onerror = ko;
+      document.body.appendChild(s);
+    });
+
+    (async () => {
+      const html = await fetch('../popup.html').then((r) => r.text());
+      const body = /<body>([\s\S]*)<\/body>/.exec(html)[1].replace(/<script[\s\S]*?<\/script>/g, '');
+      document.body.insertAdjacentHTML('afterbegin', body.replace(/src="icons\//g, 'src="../icons/'));
+      await load('../tools/version.js');
+      await load('../tools/gemini-rewrite/prompts.js');
+      await load('../tools/youtube-titles/titles.js');
+      job.report = GM_TITLES.parseReport(ANSWER, TITLES);
+      await load('../popup.js');
+      await load('../tools/gemini-rewrite/popup-rewrite.js');
+      await load('../tools/youtube-titles/popup-titles.js');
+      showTab('titles');
+      document.title = 'banc prêt';
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Google More",
+  "version": "1.2.1",
+  "description": "Boîte à outils : SAVE to TXT (page en texte propre pour IA), Reformuler avec Gemini (corriger, améliorer, version pro) et orthographe des titres YouTube.",
+  "permissions": ["activeTab", "scripting", "downloads", "storage", "clipboardWrite", "clipboardRead", "offscreen"],
+  "host_permissions": ["https://gemini.google.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Google More — boîte à outils",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

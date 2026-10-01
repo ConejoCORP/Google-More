@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Gemini (maquette de test)</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    model-response { display: block; margin: 10px 0; padding: 8px; border: 1px solid #cde; }
+    model-thoughts { display: block; color: #888; }
+    message-content, message-actions, input-area-v2, rich-textarea { display: block; }
+    .ql-editor { min-height: 60px; padding: 6px; border: 1px solid #999; }
+    .send-button { display: inline-block; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <!-- Maquette qui reproduit la structure de gemini.google.com (septembre 2026) pour tester gemini.js :
+       zone Quill, bouton d'envoi qui apparaît avec du texte, bouton « Arrêter » pendant la rédaction,
+       raisonnement dans <model-thoughts>, réponse diffusée par morceaux avec une pause. -->
+  <chat-window><div id="log"></div></chat-window>
+
+  <input-area-v2>
+    <button aria-label="Importation et outils">+</button>
+    <rich-textarea>
+      <div class="ql-editor ql-blank" contenteditable="true" role="textbox" aria-label="Saisissez un prompt pour Gemini"><p><br></p></div>
+    </rich-textarea>
+    <div class="send-button" id="sendWrap" hidden>
+      <button id="sendBtn" aria-label="Envoyer un message">➤</button>
+    </div>
+  </input-area-v2>
+
+  <script>
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    const editor = document.querySelector('.ql-editor');
+    const wrap = document.getElementById('sendWrap');
+    const btn = document.getElementById('sendBtn');
+    const log = document.getElementById('log');
+    window.__mock = { lastPrompt: null, pauseMs: 1500, hideStopButton: false };
+
+    editor.addEventListener('input', () => { wrap.hidden = !editor.innerText.trim(); });
+
+    btn.addEventListener('click', async () => {
+      if (btn.getAttribute('aria-label') !== 'Envoyer un message') return;
+      const prompt = editor.innerText;
+      window.__mock.lastPrompt = prompt;
+      editor.innerHTML = '<p><br></p>';
+      if (window.__mock.hideStopButton) wrap.hidden = true;
+      else { btn.setAttribute('aria-label', 'Arrêter la réponse'); wrap.classList.add('stop'); }
+
+      const resp = document.createElement('model-response');
+      resp.innerHTML = '<model-thoughts><div class="markdown">Je réfléchis au texte…</div></model-thoughts>'
+        + '<message-content><div class="markdown markdown-main-panel"></div></message-content>';
+      log.appendChild(resp);
+      const panel = resp.querySelector('message-content .markdown');
+
+      const m = /"""\n([\s\S]*?)\n"""/.exec(prompt);
+      const lines = (m ? m[1] : prompt).split('\n').map((l) => l.trim()).filter(Boolean);
+      const parts = ['<p>Voici le texte corrigé :</p>']
+        .concat(lines.map((l) => `<p>${l.replace(/fote/g, 'faute')} <b>ok</b><mat-icon>content_copy</mat-icon></p>`))
+        .concat(['<ul><li><p>point un</p></li><li>point deux</li></ul>', '<ol><li>étape A</li><li>étape B</li></ol>']);
+
+      await sleep(900);
+      for (let i = 0; i < parts.length; i++) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = parts[i];
+        panel.appendChild(tmp.firstChild);
+        await sleep(i === 1 ? window.__mock.pauseMs : 200); // pause au milieu de la rédaction
+      }
+
+      btn.setAttribute('aria-label', 'Envoyer un message');
+      wrap.classList.remove('stop');
+      wrap.hidden = true;
+      const actions = document.createElement('message-actions');
+      actions.innerHTML = '<button aria-label="Copier">📋</button>';
+      resp.appendChild(actions);
+    });
+  </script>
+</body>
+</html>

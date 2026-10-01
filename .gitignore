@@ -1,0 +1,10 @@
+# Système
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Réglages locaux de Claude Code
+.claude/settings.local.json
+
+# Python (serveur de test)
+__pycache__/

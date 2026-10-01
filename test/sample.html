@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Recette : Tarte aux pommes - Le Blog Cuisine</title>
+  <meta name="description" content="Une tarte aux pommes simple et rapide, en 6 étapes.">
+  <link rel="stylesheet" href="https://example.com/style.css">
+  <style>
+    body { font-family: sans-serif; margin: 0; }
+    .hidden { display: none; }
+    .invisible { visibility: hidden; }
+    .material-icons { font-family: 'Material Icons'; }
+    nav a { margin-right: 12px; }
+    .cards { display: flex; gap: 12px; }
+    .card { border: 1px solid #ccc; padding: 8px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; }
+    .inline-div { display: inline; }
+  </style>
+  <script>
+    window.dataLayer = [{ event: 'page_view', tracking: 'should not appear' }];
+  </script>
+</head>
+<body>
+  <header>
+    <nav aria-label="Navigation principale">
+      <a href="/">Accueil</a>
+      <a href="/recettes">Recettes</a>
+      <a href="https://example.com/contact">Contact</a>
+      <a href="#section-etapes">Aller aux étapes</a>
+      <span class="material-icons" aria-hidden="true">menu</span>
+      <span class="material-icons">search</span>
+    </nav>
+    <!-- Motifs Wikipédia / Bootstrap : case à cocher transparente servant de bascule, texte sr-only, lien-image -->
+    <input type="checkbox" id="menu-toggle" style="opacity:0;position:absolute;width:100%;height:100%" aria-label="Menu principal">
+    <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Texte sr-only à ignorer</span>
+    <a href="/accueil-logo"><img src="logo.png" alt="Logo du site"></a>
+    <div class="hidden">Menu caché : ne doit pas apparaître.</div>
+    <div class="invisible">Invisible : ne doit pas apparaître.</div>
+    <div hidden>Attribut hidden : ne doit pas apparaître.</div>
+  </header>
+
+  <main>
+    <article>
+      <h1>Tarte aux pommes <small>(facile)</small></h1>
+      <p class="meta">Par <a href="/auteurs/marie">Marie</a> · <time datetime="2026-09-01">1er septembre 2026</time></p>
+
+      <img src="tarte.jpg" alt="Tarte aux pommes dorée sur une grille">
+      <img src="spacer.gif">
+
+      <p>Une <strong>tarte aux pommes</strong> <em>classique</em>, prête en   moins d'une heure.
+        Le secret&nbsp;: des pommes <b>Golden</b> et un peu de <code>cannelle</code>.</p>
+
+      <p>Site officiel : <a href="https://www.example.com/">https://www.example.com/</a>
+        et un lien très long <a href="https://tracker.example.com/click?u=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">tracking</a>.</p>
+
+      <h2>Ingrédients</h2>
+      <ul>
+        <li>1 pâte brisée</li>
+        <li>4 pommes
+          <ul>
+            <li>Golden</li>
+            <li>ou Reinette</li>
+          </ul>
+        </li>
+        <li>50 g de sucre</li>
+        <li class="hidden">Ingrédient secret caché</li>
+      </ul>
+
+      <h2 id="section-etapes">Étapes</h2>
+      <ol start="1">
+        <li>Préchauffer le four à 180 °C.</li>
+        <li>Étaler la pâte.<br>Piquer le fond.</li>
+        <li>Disposer les pommes.</li>
+      </ol>
+
+      <h2>Valeurs nutritionnelles</h2>
+      <table>
+        <caption>Pour une part</caption>
+        <thead>
+          <tr><th>Nutriment</th><th>Quantité</th><th>% AJR</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Calories</td><td>250 kcal</td><td>12 %</td></tr>
+          <tr><td>Sucres</td><td>18 g | ~4 c. à café</td><td>20 %</td></tr>
+        </tbody>
+      </table>
+
+      <table><tr><td><p>Tableau de mise en page à une cellule.</p></td></tr></table>
+
+      <blockquote>
+        <p>« La meilleure tarte du monde. »</p>
+        <p>— Grand-mère</p>
+      </blockquote>
+
+      <pre><code class="language-js">const four = 180;
+console.log(`Four à ${four} °C`);</code></pre>
+
+      <details>
+        <summary>Astuce</summary>
+        <p>Ajouter une pincée de sel dans la pâte.</p>
+      </details>
+      <details>
+        <summary><h3>Titre dans un résumé (accordéon)</h3></summary>
+        <p>Contenu de l'accordéon.</p>
+      </details>
+      <button type="button"><img src="bleu.png" alt="Teinte Bleu Lagoa"></button>
+      <button type="button" aria-expanded="false"><strong><h4>Question repliée ?</h4></strong></button>
+
+      <dl>
+        <dt>Difficulté</dt>
+        <dd>Facile</dd>
+        <dt>Temps</dt>
+        <dd>45 min</dd>
+      </dl>
+
+      <hr>
+
+      <div class="cards">
+        <div class="card"><h3>Carte 1</h3><p>Texte 1</p></div>
+        <div class="card"><h3>Carte 2</h3><p>Texte 2</p></div>
+      </div>
+      <div class="grid"><span>Grille A</span><span>Grille B</span></div>
+      <p>Un <div class="inline-div">div inline</div> au milieu.</p>
+
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Vidéo de la recette"></iframe>
+      <svg width="20" height="20"><text>SVG texte à ignorer</text></svg>
+      <canvas></canvas>
+      <video src="video.mp4">Texte de repli vidéo</video>
+      <noscript>Activez JavaScript.</noscript>
+      <template><p>Contenu de template à ignorer.</p></template>
+    </article>
+
+    <form action="/commentaires" method="post">
+      <h2>Laisser un commentaire</h2>
+      <label for="nom">Nom</label>
+      <input id="nom" name="nom" type="text" placeholder="Votre nom" value="Bénard">
+      <input type="email" name="email" placeholder="Votre e-mail">
+      <input type="password" name="mdp" placeholder="Mot de passe">
+      <input type="hidden" name="csrf" value="abc">
+      <label><input type="checkbox" name="newsletter" checked> Newsletter</label>
+      <select name="note">
+        <option>5 étoiles</option>
+        <option selected>4 étoiles</option>
+        <option>3 étoiles</option>
+      </select>
+      <textarea name="message" placeholder="Votre message"></textarea>
+      <button type="submit">Envoyer</button>
+      <input type="submit" value="Envoyer aussi">
+      <button aria-label="Fermer"><span class="material-icons">close</span></button>
+    </form>
+
+    <my-widget>
+      <span slot="label">Contenu slotté depuis la lumière</span>
+    </my-widget>
+
+    <div aria-hidden="true">Icône décorative</div>
+    <div aria-hidden="true">
+      <p>Ce bloc est aria-hidden mais contient beaucoup de texte, comme une application entière derrière une fenêtre modale. Il doit être conservé parce qu'il dépasse largement les deux cents caractères que le filtre tolère pour les éléments purement décoratifs. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Le Blog Cuisine · <a href="mailto:contact@example.com">contact@example.com</a> · <a href="javascript:void(0)">Haut de page</a></p>
+  </footer>
+
+  <script>
+    class MyWidget extends HTMLElement {
+      constructor() {
+        super();
+        const root = this.attachShadow({ mode: 'open' });
+        root.innerHTML = `
+          <style>:host { display: block; }</style>
+          <h3>Titre dans le Shadow DOM</h3>
+          <p>Paragraphe dans le shadow. <slot name="label"></slot></p>
+          <ul><li>Élément shadow 1</li><li>Élément shadow 2</li></ul>
+        `;
+      }
+    }
+    customElements.define('my-widget', MyWidget);
+  </script>
+</body>
+</html>

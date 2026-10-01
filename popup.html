@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Google More</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="top">
+    <img src="icons/icon32.png" alt="" width="24" height="24">
+    <div>
+      <h1>Google More</h1>
+      <p class="sub">Boîte à outils</p>
+    </div>
+  </header>
+
+  <div class="update-banner" id="updateBanner" role="alert" hidden>
+    <span>⚠️ L'extension a été modifiée mais pas rechargée : certains outils ne répondront pas.</span>
+    <button type="button" class="small" id="reloadExt">Recharger l'extension</button>
+  </div>
+
+  <nav class="tabs" role="tablist" aria-label="Catégories d'outils">
+    <button class="tab" type="button" role="tab" data-tab="page">📄 Page → TXT</button>
+    <button class="tab" type="button" role="tab" data-tab="rewrite">✍️ Reformuler</button>
+    <button class="tab" type="button" role="tab" data-tab="titles">🎬 Titres YouTube</button>
+  </nav>
+
+  <!-- Outil 1 : SAVE to TXT -->
+  <section class="tool" id="tool-page-to-text" data-panel="page" role="tabpanel">
+    <div class="tool-head">
+      <span class="tool-icon">📄</span>
+      <div>
+        <h2>Page → texte pour IA</h2>
+        <p class="desc">Contenu pur de la page (sans CSS, scripts ni menus masqués), nom de fichier = titre de l'onglet.</p>
+      </div>
+    </div>
+
+    <p class="page" id="page" title="">
+      <span class="page-title" id="pageTitle">…</span>
+    </p>
+
+    <button class="primary" id="saveTxt" type="button">
+      <span class="ico">💾</span> SAVE to TXT
+    </button>
+    <button class="secondary" id="saveHtml" type="button">
+      HTML allégé (.html)
+    </button>
+
+    <details class="options" id="options">
+      <summary>Options</summary>
+      <label>
+        <input type="checkbox" id="optClipboard">
+        <span>Copier aussi dans le presse-papier</span>
+      </label>
+      <label>
+        <input type="checkbox" id="optLinks">
+        <span>Garder l'URL des liens</span>
+      </label>
+      <label>
+        <input type="checkbox" id="optHidden">
+        <span>Inclure les éléments masqués (menus fermés, onglets…)</span>
+      </label>
+    </details>
+
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- Outil 2 : Reformuler avec Gemini -->
+  <section class="tool" id="tool-rewrite" data-panel="rewrite" role="tabpanel" hidden>
+    <div class="tool-head">
+      <span class="tool-icon">✍️</span>
+      <div>
+        <h2>Reformuler avec Gemini</h2>
+        <p class="desc">Gemini s'ouvre dans une petite fenêtre, puis se referme. La réponse est copiée dans le presse-papier.</p>
+      </div>
+    </div>
+
+    <div class="rw-input-head">
+      <span class="rw-source" id="rwSource">Colle ton texte ci-dessous</span>
+      <button type="button" class="link" id="rwClear">Vider</button>
+    </div>
+    <textarea id="rwText" rows="5" placeholder="Sélectionne du texte dans la page, copie-le, ou colle-le ici…"></textarea>
+
+    <div class="rw-modes" id="rwModes"></div>
+
+    <div class="rw-progress" id="rwProgress" hidden>
+      <span class="spinner" aria-hidden="true"></span>
+      <span class="rw-step" id="rwStep">Gemini travaille…</span>
+      <button type="button" class="link" id="rwCancel">Annuler</button>
+    </div>
+
+    <div class="rw-result" id="rwResult" hidden>
+      <div class="rw-result-head">
+        <span id="rwResultLabel">Résultat</span>
+        <button type="button" class="small" id="rwCopy">Copier</button>
+      </div>
+      <div class="rw-output" id="rwOutput"></div>
+    </div>
+
+    <div class="status" id="rwStatus" role="status" aria-live="polite"></div>
+
+    <details class="options">
+      <summary>Options</summary>
+      <label>
+        <input type="checkbox" id="rwCloseAfter">
+        <span>Fermer Gemini une fois la réponse récupérée</span>
+      </label>
+      <details class="prompts">
+        <summary>Personnaliser les prompts</summary>
+        <div id="rwPromptFields"></div>
+        <button type="button" class="small" id="rwResetPrompts">Rétablir les prompts d'origine</button>
+      </details>
+    </details>
+  </section>
+
+  <!-- Outil 3 : orthographe des titres YouTube -->
+  <section class="tool" id="tool-titles" data-panel="titles" role="tabpanel" hidden>
+    <div class="tool-head">
+      <span class="tool-icon">🎬</span>
+      <div>
+        <h2>Orthographe des titres YouTube</h2>
+        <p class="desc">Tous les titres de la page (site d'A/B test, YouTube Studio) en une seule demande à Gemini. Majuscules et formulation ne sont jamais touchées.</p>
+      </div>
+    </div>
+
+    <div class="yt-found" id="ytFound">Recherche des titres…</div>
+
+    <label class="yt-option">
+      <input type="checkbox" id="ytAutoReplace">
+      <span>Remplacer automatiquement les titres fautifs par leur version corrigée</span>
+    </label>
+
+    <button class="primary compact" id="ytCheck" type="button">
+      <span class="ico">🔍</span> Vérifier l'orthographe des titres
+    </button>
+
+    <div class="rw-progress" id="ytProgress" hidden>
+      <span class="spinner" aria-hidden="true"></span>
+      <span class="rw-step" id="ytStep">Gemini vérifie…</span>
+      <button type="button" class="link" id="ytCancel">Annuler</button>
+    </div>
+
+    <div class="yt-report" id="ytReport" hidden>
+      <div class="yt-summary" id="ytSummary"></div>
+      <p class="yt-applied" id="ytApplied" hidden></p>
+      <div class="yt-actions">
+        <button type="button" class="small" id="ytApply" hidden>Corriger les titres dans la page</button>
+        <button type="button" class="small" id="ytCopyAll" hidden>Copier tous les titres corrigés</button>
+      </div>
+      <ol class="yt-items" id="ytItems"></ol>
+      <pre class="yt-raw" id="ytRaw" hidden></pre>
+    </div>
+
+    <div class="status" id="ytStatus" role="status" aria-live="polite"></div>
+  </section>
+
+  <footer class="foot">D'autres outils arriveront ici.</footer>
+
+  <script src="tools/version.js"></script>
+  <script src="tools/gemini-rewrite/prompts.js"></script>
+  <script src="tools/youtube-titles/titles.js"></script>
+  <script src="popup.js"></script>
+  <script src="tools/gemini-rewrite/popup-rewrite.js"></script>
+  <script src="tools/youtube-titles/popup-titles.js"></script>
+</body>
+</html>
