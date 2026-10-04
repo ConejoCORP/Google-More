@@ -1,140 +1,121 @@
+<div align="center">
+
+<img src="icons/icon128.png" width="96" alt="Icône Google More">
+
 # Google More
 
-Extension Opera / Chrome (Chromium, Manifest V3) : une boîte à outils dans laquelle on ajoute
-des petits outils au fil du temps. L'icône en haut à droite ouvre un popup avec les outils.
+Une boîte à outils pour **Opera / Chrome** : enregistre une page en texte léger pour une IA, reformule tes messages avec Gemini et vérifie l'orthographe de tes titres YouTube, en un clic depuis l'icône.
 
-## Outil 1 — SAVE to TXT (page → texte pour IA)
+[**⬇ Télécharger l'extension (.zip)**](https://github.com/StundZow/Google-More/archive/refs/heads/main.zip) · [Installation](#prise-en-main)
 
-Un clic sur **SAVE to TXT** :
+<img src="screenshots/01_page-to-txt.png" width="406" alt="Popup Google More, onglet Page → TXT">
 
-1. lit le contenu de la page active (arbre composé : Shadow DOM et `<slot>` inclus) ;
-2. jette tout ce qui n'est pas du contenu : CSS, scripts, SVG, canvas, vidéos, éléments masqués
-   (`display:none`, `visibility:hidden`, `hidden`, `aria-hidden`), glyphes de polices d'icônes
-   (Material Icons, Font Awesome… en première police seulement), textes réservés aux lecteurs
-   d'écran quand ils doublent un texte visible (« Note de bas de page », « ouvre dans une nouvelle
-   fenêtre ») — mais gardés quand ils sont la seule version texte d'un prix affiché en aria-hidden
-   (Apple, Amazon) ;
-3. produit un texte structuré en Markdown (titres `#`, listes, tableaux, liens, champs de formulaire) ;
-4. le copie dans le presse-papier ;
-5. ouvre la boîte « Enregistrer sous » avec le **titre de l'onglet** comme nom de fichier (`.txt`).
+</div>
 
-Le bouton **HTML allégé** fait la même chose mais garde les balises sémantiques et quelques attributs
-utiles (`href`, `src`, `alt`, `id`, `placeholder`…) dans un `.html`, pour les cas où la structure compte.
+## Ce que ça fait
 
-### Pourquoi du Markdown dans un `.txt` ?
+Google More regroupe dans un seul popup les petits outils qui manquent au navigateur quand on travaille avec une IA et sur YouTube. Chaque catégorie a son onglet : **📄 Page → TXT**, **✍️ Reformuler** et **🎬 Titres YouTube**.
 
-C'est le format le plus léger et le plus lisible pour une IA : 5 à 20 fois plus court que le HTML
-d'origine, la structure (titres, listes, tableaux) est conservée, et un `.txt` s'envoie partout
-(ChatGPT, Claude, Gemini…). Le fichier commence par un en-tête : titre, URL, site, date, description.
+Un clic sur **SAVE to TXT** enregistre tout le contenu utile de la page dans un `.txt` nommé d'après le titre de l'onglet, et le copie dans le presse-papier, prêt à coller dans ChatGPT, Claude ou Gemini. Les deux autres onglets envoient ton texte à **Gemini** avec le bon prompt, sans clé d'API : l'extension pilote ta propre session et te rend directement la réponse.
 
-### Options (dans le popup)
+## Pourquoi pas juste copier-coller dans une IA ?
 
-- **Copier aussi dans le presse-papier** (oui par défaut).
-- **Garder l'URL des liens** (oui par défaut) : `[texte](https://…)`. Désactiver pour un texte encore plus court.
-- **Inclure les éléments masqués** (non par défaut) : menus fermés, onglets non affichés, etc.
+Parce que le HTML d'une page est énorme et plein de bruit : la page d'achat de l'iPhone pèse **762 Ko** copiée depuis F12, pour **43 Ko** de vrai contenu. Un simple Ctrl+A, lui, perd la structure (titres, tableaux, liens). Pour reformuler, il faut ouvrir Gemini, retaper le prompt, attendre puis recopier la réponse : ici, c'est un bouton. Et une IA « corrige » volontiers les majuscules de tes titres YouTube, alors qu'elles sont voulues : ici, un garde-fou l'en empêche.
 
-### Limites
+## Fonctionnalités
 
-- Pages internes du navigateur (`opera://`, `chrome://`), boutique d'extensions, PDF : lecture impossible.
-- Fichiers locaux (`file://`) : activer « Autoriser l'accès aux URL de fichier » dans les réglages de l'extension.
-- Le popup se ferme quand la boîte « Enregistrer sous » s'ouvre (comportement du navigateur) ;
-  un badge ✓ vert apparaît sur l'icône quand le fichier est enregistré.
+- 📄 **SAVE to TXT** — tout le contenu utile de la page en Markdown, enregistré sous le titre de l'onglet et copié dans le presse-papier
+- 🧹 **Nettoyage malin** — CSS, scripts, icônes et éléments masqués retirés ; Shadow DOM inclus (YouTube), et les prix « invisibles » d'Apple gardés
+- 🪶 **5 à 20 fois plus léger** que le HTML d'origine, avec une variante **HTML allégé** quand la structure compte
+- ✍️ **Reformuler avec Gemini** — corriger les fautes sans rien changer, améliorer en gardant ton ton, ou passer en version pro
+- 🎯 **Texte pris tout seul** — la sélection de la page, sinon le contenu du presse-papier
+- 🎬 **Orthographe des titres YouTube** — tous les titres d'un test A/B en une seule demande, sur ton site d'A/B test ou dans la fenêtre « Tests A/B » de YouTube Studio
+- 🔠 **Majuscules intouchables** — la réponse de Gemini est comparée mot à mot à ton titre : seule l'orthographe peut changer
+- 🔁 **Correction automatique** des titres fautifs, directement dans leurs champs (option)
+- 🔄 **Bandeau « Recharger l'extension »** quand le code a été mis à jour mais pas rechargé
 
-## Outil 2 — Reformuler avec Gemini
+<div align="center">
+<img src="screenshots/02_reformuler.png" width="380" alt="Onglet Reformuler avec un texte corrigé">
+&nbsp;&nbsp;
+<img src="screenshots/03_titres-youtube.png" width="380" alt="Onglet Titres YouTube avec le rapport d'orthographe">
+</div>
 
-Onglet **✍️ Reformuler** du popup. Le texte de départ est pris automatiquement :
+## Prise en main
 
-1. dans le texte sélectionné sur la page (y compris dans un champ de saisie) ;
-2. sinon dans le presse-papier (s'il fait moins de 8 000 caractères) ;
-3. sinon on le colle ou l'écrit dans la zone.
+1. [Télécharge le `.zip`](https://github.com/StundZow/Google-More/archive/refs/heads/main.zip) et décompresse-le là où tu veux le garder : l'extension est lue depuis ce dossier, ne le supprime pas.
+2. Ouvre `opera://extensions` (ou `chrome://extensions`), active le **Mode développeur**, clique **Charger une extension non empaquetée** et choisis le dossier.
+3. Épingle l'icône dans la barre d'outils.
+4. Pour les outils Gemini, connecte-toi une fois à [gemini.google.com](https://gemini.google.com) dans le navigateur.
+5. Clique sur l'icône, choisis l'onglet de l'outil, et c'est parti.
 
-Trois boutons :
+*(Tu peux aussi cloner le dépôt avec `git clone https://github.com/StundZow/Google-More.git`. Après une mise à jour du dossier, clique sur ↻ dans la page des extensions ; si tu oublies, le popup affiche un bandeau orange pour le faire à ta place.)*
 
-- **✔️ Corriger les fautes** : orthographe, grammaire, ponctuation, sans rien changer d'autre.
-- **✨ Améliorer mon texte** : plus clair et fluide, en gardant le ton et le niveau de langue.
-- **💼 Version pro** : registre professionnel, sans rien inventer.
+## Comment ça marche
 
-Au clic, l'extension ouvre Gemini dans une petite fenêtre au premier plan (dans un onglet en
-arrière-plan, Gemini ne rédige pas), écrit le prompt, l'envoie, attend la fin de la réponse, la copie
-dans le presse-papier, referme la fenêtre et revient sur la fenêtre d'origine. Ne pas réduire la
-fenêtre Gemini pendant qu'elle travaille.
-Le popup peut être fermé pendant ce temps : le badge de l'icône passe à « … » puis « ✓ » (ou « ! » en cas
-d'erreur, et l'onglet Gemini reste alors ouvert pour voir le problème). Le dernier résultat reste affiché
-dans le popup pendant une heure, avec un bouton **Copier**.
+**SAVE to TXT** parcourt la page telle que le navigateur l'affiche, Shadow DOM compris, garde ce qui est visible et le convertit en Markdown : titres, listes, tableaux, liens, champs de formulaire. Le fichier commence par un en-tête (titre, URL, date, description) pour que l'IA sache d'où vient le texte.
 
-Options : fermer Gemini ou non après la réponse, prompts personnalisables.
+**Reformuler** et **Titres YouTube** n'utilisent pas de clé d'API : l'extension ouvre une petite fenêtre Gemini au premier plan (dans un onglet en arrière-plan, Gemini ne rédige pas), écrit le prompt, attend la fin de la réponse, la récupère, puis referme la fenêtre et te rend la main. Pendant ce temps, l'icône affiche « … », puis « ✓ ». Si quelque chose bloque (connexion demandée, limite atteinte), la fenêtre reste ouverte pour que tu voies le problème.
 
-### Limites
+**Le garde-fou des titres** : Gemini renvoie un rapport titre par titre, que l'extension compare mot à mot avec l'original. Un changement de majuscules ou de ponctuation (« .. » → « ... ») n'est jamais compté comme une faute, et la casse d'origine est reportée sur le mot corrigé (« CHER » → « CHERS »). Quand la fenêtre « Tests A/B » de YouTube Studio est ouverte, seuls ses titres sont vérifiés, pas celui de la page derrière.
 
-- Il faut être connecté à Gemini dans le navigateur.
-- Chaque reformulation crée une conversation dans l'historique Gemini.
-- L'extension pilote la page de Gemini : si Google change sa page, il faudra adapter
-  `tools/gemini-rewrite/gemini.js` (les repères utilisés sont listés en tête du fichier).
+## Ce que pèse une page
 
-## Outil 3 — Orthographe des titres YouTube
+Mesuré pendant le développement, sur de vraies pages :
 
-Onglet **🎬 Titres YouTube** du popup. Il affiche les titres trouvés sur la page active, puis le bouton
-**Vérifier l'orthographe des titres** les envoie tous à Gemini dans un seul prompt.
+| Page | HTML complet | SAVE to TXT |
+| --- | --- | --- |
+| Achat d'iPhone sur apple.com | 762 Ko (copie F12) | 43 Ko, prix et options compris |
+| Configurateur Peugeot 308 | 773 Ko (copie F12) | 17 Ko |
+| Wikipédia, « Tarte aux pommes » | 107 Ko | 11 Ko, ou 4,8 Ko sans les URL des liens |
 
-Titres pris en compte :
+Sur le configurateur Peugeot, tout le texte visible à l'écran est présent. Seuls manquent le panneau de cookies caché et les fiches techniques repliées, récupérables avec l'option **Inclure les éléments masqués**.
 
-- sur le site d'A/B test : les champs « Write title » ;
-- dans YouTube Studio : le champ Titre de la page « Détails » ;
-- si la fenêtre **Tests A/B** de YouTube Studio est ouverte : uniquement ses titres (« Ajouter le titre 1/2/3 »).
-  Règle générale : quand une fenêtre ouverte contient des champs titre, seuls ceux-là comptent.
+Sur la page Apple, chaque prix existe en double : une version visuelle cachée aux lecteurs d'écran, et une version texte invisible à l'écran. SAVE to TXT garde la version texte, et jette les textes pour lecteurs d'écran qui ne font que répéter l'affichage (« Note de bas de page », « s'ouvre dans une nouvelle fenêtre »).
 
-Gemini ne corrige que l'orthographe, la grammaire, la conjugaison et les accords. Les majuscules, la
-formulation, l'argot et la ponctuation (« .. », « … », « !! ») ne sont jamais touchés. Garde-fou : la
-réponse est comparée mot à mot avec le titre d'origine ; un changement de majuscules ou de ponctuation
-n'est pas compté comme une faute, et la casse d'origine est reportée sur le mot corrigé (« CHER » → « CHERS »).
+## Limites
 
-Le rapport s'affiche dans le popup, qui se rouvre tout seul à la fin : « Tout est bon », ou la liste des
-titres à corriger avec les mots fautifs soulignés, la correction surlignée et un bouton **Copier**.
+- Les pages internes du navigateur (`opera://`, `chrome://`), la boutique d'extensions et les PDF ne sont pas lisibles par une extension.
+- Les outils Gemini demandent d'être connecté à Gemini, et chaque demande crée une conversation dans ton historique.
+- Ne réduis pas la petite fenêtre Gemini pendant qu'elle travaille.
+- L'extension pilote la page de Gemini : si Google la modifie, il faudra adapter `tools/gemini-rewrite/gemini.js` (les repères utilisés sont listés en tête du fichier).
 
-Option **Remplacer automatiquement les titres fautifs par leur version corrigée** (activée par défaut) :
-les titres sont réécrits directement dans leurs champs. Il faut ensuite enregistrer sur le site ou dans
-YouTube Studio. Sans l'option, le bouton **Corriger les titres dans la page** du rapport fait la même chose.
+## Développer
 
-## Installation dans Opera
+Les pages de test se servent avec un petit serveur local, lancé dans le dossier de l'extension :
 
-1. Ouvrir `opera://extensions`.
-2. Activer le **Mode développeur** (en haut à droite).
-3. Cliquer sur **Charger une extension non empaquetée**.
-4. Sélectionner ce dossier (`Google More`).
-5. Épingler l'icône dans la barre d'outils si besoin.
+```bash
+python -m http.server 8766
+```
 
-(Même procédure dans Chrome via `chrome://extensions`.)
+- `http://127.0.0.1:8766/test/sample.html` : page piège pour SAVE to TXT (listes, tableaux, formulaires, Shadow DOM, éléments masqués).
+- `http://127.0.0.1:8766/test/gemini-mock.html` : maquette de la page Gemini pour tester `gemini.js` sans rien envoyer.
+- `http://127.0.0.1:8766/test/popup-harness.html?tab=page` (ou `rewrite`, `titles`) : le vrai popup avec des données de démonstration.
 
-## Fichiers
+Pour régénérer les captures de ce README (Edge ou Chrome sans fenêtre, nécessite Pillow) :
 
-- `manifest.json` : déclaration de l'extension (permissions : `activeTab`, `scripting`, `downloads`, `storage`,
-  `clipboardWrite`, `clipboardRead`, `offscreen` ; accès à `gemini.google.com`).
-- `popup.html` / `popup.css` / `popup.js` : la boîte à outils, avec un onglet par catégorie.
-- `background.js` : service worker ; téléchargement de SAVE to TXT, et chargement de la partie Gemini.
-- `offscreen.html` / `offscreen.js` : document caché qui écrit dans le presse-papier pour le service worker.
-- `tools/page-to-text/extract.js` : script injecté dans la page ; conversion DOM → Markdown / HTML allégé.
-- `tools/gemini-rewrite/prompts.js` : les 3 modes, leurs prompts et le nettoyage de la réponse.
-- `tools/gemini-rewrite/background-gemini.js` : ouverture de Gemini, suivi de la tâche, presse-papier.
-- `tools/gemini-rewrite/gemini.js` : script injecté dans Gemini (saisie, envoi, lecture de la réponse).
-- `tools/gemini-rewrite/popup-rewrite.js` : l'onglet Reformuler du popup.
-- `tools/youtube-titles/titles.js` : prompt des titres, lecture de la réponse, comparaison mot à mot,
-  recherche et remplacement des titres dans la page.
-- `tools/youtube-titles/popup-titles.js` : l'onglet Titres YouTube du popup.
-- `icons/` : icônes.
-- `test/sample.html` : page de test couvrant listes, tableaux, formulaires, Shadow DOM, éléments masqués…
-- `test/gemini-mock.html` : maquette de la page Gemini pour tester `gemini.js` sans rien envoyer.
-- `test/popup-harness.html` : le vrai popup affiché hors extension, avec un rapport de titres simulé.
-  (`python -m http.server 8766` dans ce dossier puis `http://127.0.0.1:8766/test/...`).
+```bash
+python test/screenshots.py
+```
 
-## Après une modification du code
+| Fichier | Rôle |
+| --- | --- |
+| `manifest.json` | Déclaration de l'extension et de ses permissions |
+| `popup.html` / `popup.css` / `popup.js` | La boîte à outils, un onglet par catégorie |
+| `background.js` | Service worker : téléchargement de SAVE to TXT, chargement de la partie Gemini |
+| `offscreen.html` / `offscreen.js` | Document caché qui écrit dans le presse-papier pour le service worker |
+| `tools/page-to-text/` | Conversion de la page en Markdown ou HTML allégé |
+| `tools/gemini-rewrite/` | Prompts, pilotage de la fenêtre Gemini, onglet Reformuler |
+| `tools/youtube-titles/` | Prompt des titres, comparaison mot à mot, lecture et remplacement des titres |
+| `tools/version.js` | Numéro de version du code, comparé entre le popup et le service worker |
 
-Le popup est relu depuis le disque à chaque ouverture, mais le service worker garde l'ancien code tant
-que l'extension n'est pas rechargée. Le popup compare `GM_BUILD` (`tools/version.js`) avec celui du
-service worker en cours : s'ils diffèrent, un bandeau propose **Recharger l'extension**. Augmenter
-`GM_BUILD` (et la `version` du manifest) à chaque modification.
+**Ajouter un outil** : crée un dossier `tools/<nom-outil>/`, ajoute un bouton dans `.tabs` et une `<section data-panel="…">` dans `popup.html`, branche son script, puis déclare les permissions nécessaires dans `manifest.json`.
 
-## Ajouter un outil
+## Publier une nouvelle version (pour les mainteneurs)
 
-1. Créer un dossier `tools/<nom-outil>/` avec son script.
-2. Ajouter une `<section class="tool">` dans `popup.html` et son code dans `popup.js`.
-3. Déclarer les permissions nécessaires dans `manifest.json`.
+Augmente `GM_BUILD` dans `tools/version.js` et `version` dans `manifest.json`, avec la même valeur : c'est ce qui fait apparaître le bandeau « Recharger l'extension » chez ceux qui ont l'ancienne version chargée. Puis :
+
+```bash
+git add -A
+git commit -m "Description des changements"
+git push
+```

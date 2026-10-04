@@ -7,24 +7,49 @@
 </head>
 <body>
   <script>
-    // Banc d'essai : affiche le vrai popup hors extension, avec une fausse API chrome.
-    // Onglet Titres YouTube, rapport calculé par titles.js à partir d'une réponse Gemini simulée.
-    // http://127.0.0.1:8766/test/popup-harness.html
+    // Banc d'essai : affiche le vrai popup hors extension, avec une fausse API chrome et des données
+    // de démonstration. Sert aux tests et aux captures du README (test/screenshots.py).
+    //   http://127.0.0.1:8766/test/popup-harness.html?tab=page|rewrite|titles
+    //   &stale=1 : simule un service worker pas rechargé (il ne répond à aucun message).
+    const params = new URLSearchParams(location.search);
+    const TAB = params.get('tab') || 'titles';
+    const STALE = params.has('stale');
+
+    // ---------------------------------------------------------------- données de démonstration
+
     const TITLES = [
       "J'ai tout acheté sur les Jeux les plus Pay2Win de Roblox...",
       "J'ai Joué au Jeux les plus PAY TO WIN de Roblox..",
       'J’ai Joué aux Jeux les Plus CHER de Roblox…'
     ];
-    const ANSWER = JSON.stringify({ titres: [
+    const TITLES_ANSWER = JSON.stringify({ titres: [
       { n: 1, ok: true, corrige: TITLES[0], explication: '' },
       { n: 2, ok: false, corrige: "J'ai joué aux jeux les plus PAY TO WIN de Roblox...", explication: '« au » devient « aux » devant un nom pluriel.' },
       { n: 3, ok: false, corrige: 'J’ai joué aux jeux les plus chers de Roblox…', explication: '« cher » s’accorde avec « jeux ».' }
     ] });
-    const job = { id: 1, kind: 'titles', status: 'done', finishedAt: Date.now(), result: ANSWER, report: null,
-      applied: { replaced: 2, missing: [], where: 'le test A/B de YouTube Studio', total: 2 } };
 
-    // ?stale=1 : simule un service worker pas rechargé (il ne répond à aucun message).
-    const STALE = new URLSearchParams(location.search).has('stale');
+    const REWRITE_INPUT = "salut, jai regarder ton mail et je pense quon peut se voir mardi si sa te va, dit moi";
+    const REWRITE_RESULT = "Salut, j'ai regardé ton mail et je pense qu'on peut se voir mardi si ça te va, dis-moi.";
+
+    const DEMO = {
+      page: {
+        tab: { id: 1, url: 'https://fr.wikipedia.org/wiki/Tarte_aux_pommes', title: 'Tarte aux pommes — Wikipédia' },
+        job: null
+      },
+      rewrite: {
+        tab: { id: 1, url: 'https://mail.google.com/mail/u/0/', title: 'Boîte de réception - Gmail' },
+        job: { id: 2, kind: 'rewrite', mode: 'fix', status: 'done', finishedAt: Date.now(), input: REWRITE_INPUT,
+          result: REWRITE_RESULT, copied: true }
+      },
+      titles: {
+        tab: { id: 1, url: 'https://studio.youtube.com/video/x/edit', title: 'Détails de la vidéo - YouTube Studio' },
+        job: { id: 1, kind: 'titles', status: 'done', finishedAt: Date.now(), result: TITLES_ANSWER, report: null,
+          applied: { replaced: 2, missing: [], where: 'le test A/B de YouTube Studio', total: 2 } }
+      }
+    }[TAB] || {};
+
+    // ---------------------------------------------------------------- fausse API chrome
+
     const runtime = {
       id: 'banc-d-essai',
       lastError: null,
@@ -45,12 +70,21 @@
       runtime,
       storage: {
         sync: { get: (d, cb) => cb({ ...d }), set: () => {} },
-        session: { get: (k, cb) => cb({ gmJob: job }), set: () => {} },
+        session: { get: (k, cb) => cb({ gmJob: DEMO.job || null }), set: () => {} },
         onChanged: { addListener() {} }
       },
-      tabs: { query: async () => [{ id: 1, url: 'https://studio.youtube.com/video/x/edit', title: 'YouTube Studio' }] },
-      scripting: { executeScript: async () => [{ result: { titles: TITLES, where: 'le test A/B de YouTube Studio', inDialog: true } }] }
+      tabs: { query: async () => [DEMO.tab || { id: 1, url: 'https://example.com/', title: 'Exemple' }] },
+      scripting: {
+        executeScript: async ({ func }) => {
+          const name = func && func.name;
+          if (name === 'pageSelection') return [{ result: TAB === 'rewrite' ? REWRITE_INPUT : '' }];
+          if (name === 'pageTitles') return [{ result: { titles: TITLES, where: 'le test A/B de YouTube Studio', inDialog: true } }];
+          return [{ result: null }];
+        }
+      }
     };
+
+    // ---------------------------------------------------------------- chargement du vrai popup
 
     const load = (src) => new Promise((ok, ko) => {
       const s = document.createElement('script');
@@ -59,17 +93,22 @@
     });
 
     (async () => {
+      try { localStorage.setItem('gmPopupTab', TAB); } catch (_) { /* stockage indisponible */ }
       const html = await fetch('../popup.html').then((r) => r.text());
       const body = /<body>([\s\S]*)<\/body>/.exec(html)[1].replace(/<script[\s\S]*?<\/script>/g, '');
       document.body.insertAdjacentHTML('afterbegin', body.replace(/src="icons\//g, 'src="../icons/'));
       await load('../tools/version.js');
       await load('../tools/gemini-rewrite/prompts.js');
       await load('../tools/youtube-titles/titles.js');
-      job.report = GM_TITLES.parseReport(ANSWER, TITLES);
+      if (DEMO.job && DEMO.job.kind === 'titles') DEMO.job.report = GM_TITLES.parseReport(TITLES_ANSWER, TITLES);
       await load('../popup.js');
       await load('../tools/gemini-rewrite/popup-rewrite.js');
       await load('../tools/youtube-titles/popup-titles.js');
-      showTab('titles');
+      showTab(TAB);
+      if (TAB === 'page') {
+        setStatus('Copié dans le presse-papier ✔\n11 Ko · ~2 781 tokens\nFichier : Tarte aux pommes — Wikipédia.txt', 'ok');
+      }
+      await new Promise((r) => setTimeout(r, 300)); // laisse le pré-remplissage se terminer
       document.title = 'banc prêt';
     })();
   </script>
