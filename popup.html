@@ -22,7 +22,7 @@
   <nav class="tabs" role="tablist" aria-label="Catégories d'outils">
     <button class="tab" type="button" role="tab" data-tab="page">📄 Page → TXT</button>
     <button class="tab" type="button" role="tab" data-tab="rewrite">✍️ Reformuler</button>
-    <button class="tab" type="button" role="tab" data-tab="titles">🎬 Titres YouTube</button>
+    <button class="tab" type="button" role="tab" data-tab="titles">🎬 YouTube</button>
   </nav>
 
   <!-- Outil 1 : SAVE to TXT -->
@@ -154,6 +154,27 @@
     <div class="status" id="ytStatus" role="status" aria-live="polite"></div>
   </section>
 
+  <!-- Outil 4 : panneau des tests A/B terminés dans YouTube Studio (même onglet que les titres) -->
+  <section class="tool tool-gap" id="tool-ab" data-panel="titles" role="tabpanel" hidden>
+    <div class="tool-head">
+      <span class="tool-icon">🧪</span>
+      <div>
+        <h2>Tests A/B terminés</h2>
+        <p class="desc">Sur la page Contenu de YouTube Studio, un panneau en haut liste les vidéos dont le test A/B est terminé, avec un bouton qui ouvre directement les résultats.</p>
+      </div>
+    </div>
+
+    <label class="yt-option">
+      <input type="checkbox" id="abEnabled">
+      <span>Afficher le panneau dans YouTube Studio</span>
+    </label>
+
+    <div class="ab-hidden">
+      <span id="abHiddenInfo">Aucune vidéo masquée du panneau.</span>
+      <button type="button" class="small" id="abResetHidden" hidden>Tout réafficher</button>
+    </div>
+  </section>
+
   <footer class="foot">D'autres outils arriveront ici.</footer>
 
   <script src="tools/version.js"></script>
@@ -162,5 +183,6 @@
   <script src="popup.js"></script>
   <script src="tools/gemini-rewrite/popup-rewrite.js"></script>
   <script src="tools/youtube-titles/popup-titles.js"></script>
+  <script src="tools/youtube-ab/popup-ab.js"></script>
 </body>
 </html>

@@ -330,6 +330,18 @@ button.small:hover { background: #f1f3f4; }
 }
 .prompts button.small { margin-top: 8px; }
 
+/* ------------------------------------------------------------ outil Tests A/B terminés */
+
+.tool-gap { margin-top: 10px; }
+.ab-hidden {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 /* ------------------------------------------------------------ outil Titres YouTube */
 
 .primary.compact { font-size: 15px; letter-spacing: 0; }

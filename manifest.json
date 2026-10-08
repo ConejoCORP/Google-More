@@ -1,10 +1,18 @@
 {
   "manifest_version": 3,
   "name": "Google More",
-  "version": "1.2.1",
-  "description": "Boîte à outils : SAVE to TXT (page en texte propre pour IA), Reformuler avec Gemini (corriger, améliorer, version pro) et orthographe des titres YouTube.",
+  "version": "1.3.0",
+  "description": "Boîte à outils : SAVE to TXT (page en texte propre pour IA), Reformuler avec Gemini, orthographe des titres YouTube et panneau des tests A/B terminés dans YouTube Studio.",
   "permissions": ["activeTab", "scripting", "downloads", "storage", "clipboardWrite", "clipboardRead", "offscreen"],
-  "host_permissions": ["https://gemini.google.com/*"],
+  "host_permissions": ["https://gemini.google.com/*", "https://studio.youtube.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://studio.youtube.com/*"],
+      "js": ["tools/youtube-ab/ab-panel.js"],
+      "css": ["tools/youtube-ab/ab-panel.css"],
+      "run_at": "document_idle"
+    }
+  ],
   "background": {
     "service_worker": "background.js"
   },

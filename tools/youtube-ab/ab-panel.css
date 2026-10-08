@@ -1,0 +1,175 @@
+/* Google More — panneau « Tests A/B terminés » injecté dans YouTube Studio (page Contenu).
+   Thème clair par défaut, thème sombre quand Studio pose l'attribut dark sur <html>. */
+
+#gm-ab-panel {
+  --gm-bg: #ffffff;
+  --gm-fg: #0f0f0f;
+  --gm-muted: #606060;
+  --gm-line: #e5e5e5;
+  --gm-soft: #f2f2f2;
+  --gm-accent: #065fd4;
+  --gm-accent-fg: #ffffff;
+  --gm-frame: #f2c94c;
+
+  box-sizing: border-box;
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--gm-frame);
+  border-left-width: 4px;
+  border-radius: 12px;
+  background: var(--gm-bg);
+  color: var(--gm-fg);
+  font: 14px/1.4 Roboto, "YouTube Sans", Arial, sans-serif;
+}
+
+html[dark] #gm-ab-panel {
+  --gm-bg: #212121;
+  --gm-fg: #f1f1f1;
+  --gm-muted: #aaaaaa;
+  --gm-line: #3f3f3f;
+  --gm-soft: #2b2b2b;
+  --gm-accent: #3ea6ff;
+  --gm-accent-fg: #0f0f0f;
+  --gm-frame: #8a6d1d;
+}
+
+#gm-ab-panel * { box-sizing: border-box; }
+
+#gm-ab-panel .gm-ab-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#gm-ab-panel .gm-ab-icon { font-size: 22px; line-height: 1; }
+#gm-ab-panel .gm-ab-heading {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+#gm-ab-panel .gm-ab-heading strong { font-size: 15px; font-weight: 600; }
+#gm-ab-panel .gm-ab-sub { font-size: 12px; color: var(--gm-muted); }
+
+#gm-ab-panel .gm-ab-list {
+  display: grid;
+  gap: 6px;
+  max-height: 340px;
+  margin: 10px 0 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+#gm-ab-panel .gm-ab-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--gm-soft);
+}
+#gm-ab-panel .gm-ab-item.is-masked { opacity: .55; }
+
+#gm-ab-panel .gm-ab-thumb-link { flex: none; display: block; }
+#gm-ab-panel .gm-ab-thumb {
+  display: block;
+  width: 96px;
+  height: 54px;
+  border-radius: 6px;
+  background: #000;
+  object-fit: cover;
+}
+
+#gm-ab-panel .gm-ab-meta {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+#gm-ab-panel .gm-ab-title {
+  overflow: hidden;
+  color: var(--gm-fg);
+  font-weight: 500;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#gm-ab-panel .gm-ab-title:hover { text-decoration: underline; }
+#gm-ab-panel .gm-ab-date { font-size: 12px; color: var(--gm-muted); }
+
+#gm-ab-panel .gm-ab-open {
+  flex: none;
+  padding: 7px 14px;
+  border-radius: 18px;
+  background: var(--gm-accent);
+  color: var(--gm-accent-fg);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+#gm-ab-panel .gm-ab-open:hover { filter: brightness(1.08); }
+
+#gm-ab-panel .gm-ab-btn {
+  flex: none;
+  padding: 6px 12px;
+  border: 1px solid var(--gm-line);
+  border-radius: 18px;
+  background: transparent;
+  color: var(--gm-fg);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+#gm-ab-panel .gm-ab-btn:hover { background: var(--gm-line); }
+
+#gm-ab-panel .gm-ab-link {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gm-accent);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+#gm-ab-panel .gm-ab-link:hover { text-decoration: underline; }
+
+/* Message temporaire (vidéo masquée, carte introuvable) */
+#gm-ab-toast {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 2300;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 480px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #323232;
+  color: #ffffff;
+  font: 14px/1.4 Roboto, Arial, sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+}
+#gm-ab-toast button {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #3ea6ff;
+  font: inherit;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* Carte « Test A/B » mise en évidence après un clic sur « Voir les résultats » */
+.gm-ab-focus {
+  border-radius: 12px;
+  outline: 3px solid #3ea6ff !important;
+  outline-offset: 6px;
+  animation: gm-ab-pulse 1.2s ease-in-out 3;
+}
+@keyframes gm-ab-pulse {
+  50% { outline-color: rgba(62, 166, 255, .25); }
+}

@@ -3,6 +3,7 @@
 // Le téléchargement part d'ici (et non du popup) : le popup se ferme dès que la boîte de dialogue
 // s'ouvre, ce qui invaliderait un blob: créé dans le popup. Une URL data: reste valide.
 // Outils 2 et 3 (Reformuler, Titres YouTube) : voir tools/gemini-rewrite/background-gemini.js, chargé en bas.
+// Outil 4 (Tests A/B terminés) : voir tools/youtube-ab/background-ab.js, chargé en bas.
 
 const pendingDownloads = new Set();
 
@@ -70,5 +71,6 @@ importScripts(
   'tools/version.js',
   'tools/gemini-rewrite/prompts.js',
   'tools/youtube-titles/titles.js',
-  'tools/gemini-rewrite/background-gemini.js'
+  'tools/gemini-rewrite/background-gemini.js',
+  'tools/youtube-ab/background-ab.js'
 );

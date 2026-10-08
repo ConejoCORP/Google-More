@@ -9,7 +9,7 @@
   <script>
     // Banc d'essai : affiche le vrai popup hors extension, avec une fausse API chrome et des données
     // de démonstration. Sert aux tests et aux captures du README (test/screenshots.py).
-    //   http://127.0.0.1:8766/test/popup-harness.html?tab=page|rewrite|titles
+    //   http://127.0.0.1:8766/test/popup-harness.html?tab=page|rewrite|titles  (titles = onglet « 🎬 YouTube »)
     //   &stale=1 : simule un service worker pas rechargé (il ne répond à aucun message).
     const params = new URLSearchParams(location.search);
     const TAB = params.get('tab') || 'titles';
@@ -71,6 +71,7 @@
       storage: {
         sync: { get: (d, cb) => cb({ ...d }), set: () => {} },
         session: { get: (k, cb) => cb({ gmJob: DEMO.job || null }), set: () => {} },
+        local: { get: (d, cb) => cb({ ...d }), set: () => {} },
         onChanged: { addListener() {} }
       },
       tabs: { query: async () => [DEMO.tab || { id: 1, url: 'https://example.com/', title: 'Exemple' }] },
@@ -104,6 +105,7 @@
       await load('../popup.js');
       await load('../tools/gemini-rewrite/popup-rewrite.js');
       await load('../tools/youtube-titles/popup-titles.js');
+      await load('../tools/youtube-ab/popup-ab.js');
       showTab(TAB);
       if (TAB === 'page') {
         setStatus('Copié dans le presse-papier ✔\n11 Ko · ~2 781 tokens\nFichier : Tarte aux pommes — Wikipédia.txt', 'ok');
