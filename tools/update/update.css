@@ -1,0 +1,62 @@
+/* Google More — page de mise à jour : le style du popup (popup.css), centré dans un onglet. */
+
+body.page-maj {
+  width: auto;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 56px 16px;
+  background: var(--surface);
+}
+
+.maj-carte {
+  width: 100%;
+  max-width: 460px;
+  padding: 22px 24px 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .04), 0 8px 24px rgba(0, 0, 0, .04);
+}
+.maj-carte .top { margin-bottom: 20px; }
+.maj-carte > .primary,
+.maj-carte > .secondary { margin-top: 12px; }
+
+code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--subtle);
+  font: 12px var(--mono);
+}
+
+.maj-bienvenue { margin-bottom: 18px; }
+.maj-etat { margin-bottom: 10px; font-size: 13.5px; font-weight: 600; }
+
+.maj-notes {
+  margin-bottom: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  white-space: pre-line;
+}
+
+.maj-progres { margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+.maj-progres.is-err { color: var(--err); }
+
+.maj-dossier {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.maj-dossier .secondary { margin-top: 12px; }
+.maj-aide { margin-top: 10px; font-size: 12px; }
+.maj-aide .link { font-size: 12px; }
+
+.maj-sans-acces { margin-top: 4px; }
+.maj-sans-acces ol { margin: 8px 0 0; padding-left: 20px; font-size: 12.5px; }
+.maj-sans-acces li { margin-bottom: 6px; }
+.maj-adresse { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 4px; }
+.maj-adresse code { user-select: all; }
+.page-maj .maj-cache { display: none; }

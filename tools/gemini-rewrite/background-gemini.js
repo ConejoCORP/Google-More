@@ -204,7 +204,7 @@ async function gmRunJob(task) {
       finishedAt: Date.now()
     });
     if (cancelled) {
-      chrome.action.setBadgeText({ text: '' });
+      idleBadge(); // background.js : remet « MAJ » si une mise à jour attend
       await gmCloseGemini(job);
     } else {
       // On laisse Gemini ouvert pour voir ce qui s'est passé (connexion demandée, limite atteinte…).

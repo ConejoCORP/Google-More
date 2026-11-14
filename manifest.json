@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Google More",
-  "version": "1.5.0",
+  "version": "1.6.1",
   "description": "Boîte à outils : SAVE to TXT (page en texte propre pour IA), Reformuler avec Gemini, orthographe des titres YouTube, tests A/B terminés dans YouTube Studio et générateur de mots de passe.",
   "permissions": ["activeTab", "scripting", "downloads", "storage", "clipboardWrite", "clipboardRead", "offscreen"],
   "host_permissions": ["https://gemini.google.com/*", "https://studio.youtube.com/*"],

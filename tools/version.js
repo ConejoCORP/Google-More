@@ -3,4 +3,4 @@
 // tant que l'extension n'est pas rechargée. Le popup compare donc ce numéro avec celui du service
 // worker en cours ; s'ils diffèrent, il propose de recharger l'extension.
 // À augmenter à chaque modification du code (et garder la même valeur que "version" du manifest).
-globalThis.GM_BUILD = '1.5.0';
+globalThis.GM_BUILD = '1.6.1';

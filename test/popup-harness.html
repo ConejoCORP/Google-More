@@ -15,9 +15,15 @@
     // de démonstration. Sert aux tests et aux captures du README (test/screenshots.py).
     //   http://127.0.0.1:8766/test/popup-harness.html?tab=page|rewrite|titles|password  (titles = onglet « 🎬 YouTube »)
     //   &stale=1 : simule un service worker pas rechargé (il ne répond à aucun message).
+    //   &maj=1.9.0 : GitHub annonce cette version (bandeau « Version 1.9.0 disponible ») ;
+    //   &maj=404 : GitHub injoignable ou dépôt privé ; sans maj : l'extension est à jour.
+    //   ?tab=settings : page Paramètres.
     const params = new URLSearchParams(location.search);
     const TAB = params.get('tab') || 'titles';
     const STALE = params.has('stale');
+    const MAJ = params.get('maj');
+    //   &dossier=0 : dossier de l'extension pas encore choisi (bandeau « Choisis le dossier… »).
+    const FOLDER = params.get('dossier') === '0' ? null : 'google-more';
 
     // ---------------------------------------------------------------- données de démonstration
 
@@ -57,6 +63,8 @@
     const runtime = {
       id: 'banc-d-essai',
       lastError: null,
+      getManifest: () => ({ version: globalThis.GM_BUILD }),
+      getURL: (p) => '../' + p,
       reload: () => { document.title = 'rechargement demandé'; },
       sendMessage: (m, cb) => {
         if (!cb) return;
@@ -75,10 +83,19 @@
       storage: {
         sync: { get: (d, cb) => cb({ ...d }), set: () => {} },
         session: { get: (k, cb) => cb({ gmJob: DEMO.job || null }), set: () => {} },
-        local: { get: (d, cb) => cb({ ...d }), set: () => {} },
+        // Réponse par rappel ou par promesse, comme la vraie API.
+        local: {
+          get: (d, cb) => { const v = typeof d === 'string' ? {} : { ...d }; if (cb) cb(v); return Promise.resolve(v); },
+          set: () => Promise.resolve()
+        },
         onChanged: { addListener() {} }
       },
-      tabs: { query: async () => [DEMO.tab || { id: 1, url: 'https://example.com/', title: 'Exemple' }] },
+      tabs: {
+        query: async () => [DEMO.tab || { id: 1, url: 'https://example.com/', title: 'Exemple' }],
+        create: ({ url }) => { document.title = 'onglet ouvert : ' + url; }
+      },
+      management: { getSelf: async () => ({ installType: 'development' }) },
+      action: { setBadgeText: async () => {}, setBadgeBackgroundColor: async () => {}, getBadgeText: async () => '' },
       scripting: {
         executeScript: async ({ func }) => {
           const name = func && func.name;
@@ -87,6 +104,18 @@
           return [{ result: null }];
         }
       }
+    };
+
+    // version.json sur GitHub (lu par tools/update/update-core.js), selon le paramètre maj.
+    const realFetch = window.fetch.bind(window);
+    window.fetch = (url, opts) => {
+      if (String(url).startsWith('https://raw.githubusercontent.com/')) {
+        if (MAJ === '404') return Promise.resolve(new Response('Not Found', { status: 404 }));
+        const version = MAJ || globalThis.GM_BUILD;
+        return Promise.resolve(new Response(JSON.stringify({ version, ref: 'abc1234', files: ['manifest.json'],
+          notes: 'Nouveautés de démonstration.' }), { status: 200 }));
+      }
+      return realFetch(url, opts);
     };
 
     // ---------------------------------------------------------------- chargement du vrai popup
@@ -103,6 +132,8 @@
       const body = /<body>([\s\S]*)<\/body>/.exec(html)[1].replace(/<script[\s\S]*?<\/script>/g, '');
       document.body.insertAdjacentHTML('afterbegin', body.replace(/src="icons\//g, 'src="../icons/'));
       await load('../tools/version.js');
+      await load('../tools/update/update-core.js');
+      __gmUpdate.dossierMemorise = async () => FOLDER; // pas de vrai dossier mémorisé dans le banc d'essai
       await load('../tools/gemini-rewrite/prompts.js');
       await load('../tools/youtube-titles/titles.js');
       await load('../tools/password/password.js');
@@ -112,6 +143,7 @@
       await load('../tools/youtube-titles/popup-titles.js');
       await load('../tools/youtube-ab/popup-ab.js');
       await load('../tools/password/popup-password.js');
+      await load('../tools/update/popup-update.js');
       showTab(TAB);
       if (TAB === 'page') {
         setStatus('Copié dans le presse-papier\n11 Ko · ~2 781 tokens\nFichier : Tarte aux pommes — Wikipédia.txt', 'ok');

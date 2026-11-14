@@ -8,3 +8,6 @@ desktop.ini
 
 # Python (serveur de test)
 __pycache__/
+
+# Archives de release.js
+dist/

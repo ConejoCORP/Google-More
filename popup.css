@@ -215,6 +215,23 @@ button.link:hover { color: var(--fg); text-decoration-color: currentColor; }
 .alert-body { display: grid; gap: 8px; justify-items: start; }
 #updateBanner { margin-bottom: 12px; }
 
+/* Mise à jour disponible */
+.maj-banner {
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px 8px 8px 12px;
+  color: var(--fg);
+}
+.maj-banner > .ic { margin-top: 0; color: var(--fg-2); }
+.maj-banner-text { flex: 1; min-width: 0; font-weight: 500; }
+#majFolderBanner .maj-banner-text { font-weight: 400; font-size: 12.5px; }
+
+/* Paramètres > « Rechercher une mise à jour » : discret, plein quand une version attend. */
+#majSearch[disabled] { cursor: progress; }
+#majSearch.is-dispo { border-color: var(--primary); background: var(--primary); color: var(--primary-fg); }
+#majSearch.is-dispo:hover { background: var(--primary-hover); }
+#tool-settings .field-label { margin-top: 4px; }
+
 /* ------------------------------------------------------------ onglets */
 
 .tabs {

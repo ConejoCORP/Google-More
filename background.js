@@ -53,7 +53,19 @@ function flashBadge(text, color, ms = 3000) {
   clearTimeout(badgeTimer);
   chrome.action.setBadgeBackgroundColor({ color });
   chrome.action.setBadgeText({ text });
-  badgeTimer = setTimeout(() => chrome.action.setBadgeText({ text: '' }), ms);
+  badgeTimer = setTimeout(idleBadge, ms);
+}
+
+// Pastille au repos : « MAJ » si une mise à jour attend (dernier résultat connu), sinon rien.
+// Appelée après chaque pastille temporaire (✓, !, …) pour ne pas effacer l'annonce de mise à jour.
+async function idleBadge() {
+  let dispo = false;
+  try {
+    const s = await self.__gmUpdate.dernierConnu();
+    dispo = !!(s && s.disponible);
+  } catch (_) { /* pas encore vérifié */ }
+  if (dispo) chrome.action.setBadgeBackgroundColor({ color: '#18181b' });
+  chrome.action.setBadgeText({ text: dispo ? 'MAJ' : '' });
 }
 
 // UTF-8 → base64, par morceaux (String.fromCharCode(...bigArray) plante sur les grandes pages).
@@ -69,8 +81,44 @@ function toBase64(str) {
 
 importScripts(
   'tools/version.js',
+  'tools/update/update-core.js',
   'tools/gemini-rewrite/prompts.js',
   'tools/youtube-titles/titles.js',
   'tools/gemini-rewrite/background-gemini.js',
   'tools/youtube-ab/background-ab.js'
 );
+
+// ---------------------------------------------------------------- mise à jour automatique
+
+// Au démarrage du navigateur et après chaque (re)chargement de l'extension, on regarde sur GitHub si
+// une version plus récente existe (une petite requête vers raw.githubusercontent.com, sans cookie).
+// Si oui, la pastille « MAJ » apparaît sur l'icône ; le popup propose alors de l'installer.
+async function checkForUpdate() {
+  await self.__gmUpdate.verifier();
+  idleBadge();
+}
+
+chrome.runtime.onStartup.addListener(() => { checkForUpdate(); });
+chrome.runtime.onInstalled.addListener(async (details) => {
+  checkForUpdate();
+  // Première installation depuis un dossier : on fait désigner ce dossier tout de suite, pendant qu'on
+  // sait encore où on vient de le décompresser. Les mises à jour s'y installeront ensuite sans le
+  // redemander.
+  // Extension déjà installée avant l'arrivée de la mise à jour automatique (recharger donne « update »,
+  // pas « install ») : la même page s'ouvre UNE fois si aucun dossier n'est mémorisé. Ensuite, le
+  // popup garde un bandeau tant que le dossier n'est pas choisi.
+  // Pas de test U.peutEcrire() ici : le sélecteur de dossier n'existe que dans les pages, jamais dans un
+  // service worker. La page elle-même explique quoi faire si le navigateur bloque l'accès (Brave).
+  const U = self.__gmUpdate;
+  if (!details || !(await U.estDossierLocal())) return;
+  const welcome = () => chrome.tabs.create({ url: chrome.runtime.getURL('tools/update/update.html?bienvenue=1') });
+  if (details.reason === 'install') {
+    await chrome.storage.local.set({ gmWelcomeShown: true });
+    welcome();
+  } else if (details.reason === 'update') {
+    const { gmWelcomeShown } = await chrome.storage.local.get('gmWelcomeShown');
+    if (gmWelcomeShown || (await U.dossierMemorise())) return;
+    await chrome.storage.local.set({ gmWelcomeShown: true });
+    welcome();
+  }
+});
