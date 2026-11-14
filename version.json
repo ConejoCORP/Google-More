@@ -1,6 +1,6 @@
 {
-  "version": "1.6.1",
-  "ref": "441050db1216c599c1644920cb9350a8eaf98dd7",
+  "version": "1.6.2",
+  "ref": "03c468d707a6906185b76632793b88aa6f4bfb69",
   "files": [
     "background.js",
     "icons/icon128.png",
@@ -33,6 +33,6 @@
     "tools/youtube-titles/popup-titles.js",
     "tools/youtube-titles/titles.js"
   ],
-  "notes": "Première version publique de Google More : SAVE to TXT (page en texte léger pour une IA), Reformuler avec Gemini, orthographe des titres YouTube, bandeau des tests A/B terminés dans YouTube Studio, générateur de mots de passe. Nouveau : mise à jour automatique depuis GitHub, avec la page Bienvenue pour choisir le dossier dès l'installation et le bouton « Rechercher une mise à jour » dans les Paramètres.",
+  "notes": "Nouvelle icône, plus sobre : une tuile anthracite avec trois carrés et un « + », nette à toutes les tailles dans la barre d'outils.",
   "download": "https://github.com/ConejoCORP/Google-More/releases/latest"
 }
