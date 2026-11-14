@@ -72,6 +72,8 @@ def capture(browser, tab, dest):
             "--no-default-browser-check",
             f"--user-data-dir={profile}",
             f"--force-device-scale-factor={SCALE}",
+            # Thème clair pour le README, même si Windows est en thème sombre (1 = clair).
+            "--blink-settings=preferredColorScheme=1",
             f"--window-size={WIDTH},{HEIGHT}",
             "--virtual-time-budget=4000",
             f"--screenshot={dest}",
@@ -82,7 +84,9 @@ def capture(browser, tab, dest):
 def frame(raw_path, dest):
     """Recadre sur le contenu, puis pose le popup sur un fond transparent avec coins et ombre."""
     img = Image.open(raw_path).convert("RGB")
-    diff = ImageChops.difference(img, Image.new("RGB", img.size, (255, 255, 255)))
+    # Couleur du fond lue en bas de l'image (vide sous le popup), plutôt que supposée blanche.
+    fond = img.getpixel((img.width // 2, img.height - 2))
+    diff = ImageChops.difference(img, Image.new("RGB", img.size, fond))
     box = diff.getbbox()
     bottom = min(img.height, (box[3] if box else img.height) + 14 * SCALE)
     popup = img.crop((0, 0, img.width, bottom))
