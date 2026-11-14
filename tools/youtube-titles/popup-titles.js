@@ -146,12 +146,13 @@
     return frag;
   }
 
-  function line(mark, content) {
+  // icon : nom d'une icône au trait de popup.html (check, x, help, arrow-right).
+  function line(icon, content) {
     const div = document.createElement('div');
     div.className = 'yt-line';
     const m = document.createElement('span');
     m.className = 'yt-mark';
-    m.textContent = mark;
+    m.append(gmIcon(icon));
     const t = document.createElement('span');
     t.className = 'yt-text';
     t.append(content);
@@ -173,10 +174,19 @@
     b.textContent = label;
     b.addEventListener('click', async () => {
       const ok = await copyToClipboard(text);
-      b.textContent = ok ? 'Copié ✔' : 'Échec';
+      b.textContent = ok ? 'Copié' : 'Échec';
       setTimeout(() => { b.textContent = label; }, 1500);
     });
     return b;
+  }
+
+  // Bandeau de synthèse : kind = 'ok' ou 'warn', avec l'icône correspondante.
+  function setSummary(kind, text) {
+    summaryEl.className = `alert ${kind}`;
+    summaryEl.textContent = '';
+    const body = document.createElement('span');
+    body.textContent = text;
+    summaryEl.append(gmIcon(kind === 'ok' ? 'circle-check' : 'alert'), body);
   }
 
   const badItems = (report) => (report && report.parsed ? report.items.filter((it) => it.ok === false) : []);
@@ -187,12 +197,12 @@
     if (!applied) return;
     if (applied.error) {
       appliedEl.className = 'yt-applied err';
-      appliedEl.textContent = `⚠️ ${applied.error}`;
+      appliedEl.textContent = applied.error;
       return;
     }
     const parts = [];
     if (applied.replaced) {
-      parts.push(`✔ ${plural(applied.replaced, 'titre')} corrigé${applied.replaced > 1 ? 's' : ''} dans ${applied.where || 'la page'}. `
+      parts.push(`${plural(applied.replaced, 'titre')} corrigé${applied.replaced > 1 ? 's' : ''} dans ${applied.where || 'la page'}. `
         + 'Pense à enregistrer.');
     }
     if (applied.missing.length) {
@@ -211,8 +221,7 @@
     copyAllBtn.hidden = true;
 
     if (!report || !report.parsed) {
-      summaryEl.className = 'yt-summary warn';
-      summaryEl.textContent = '⚠️ Réponse de Gemini impossible à lire automatiquement. La voici telle quelle :';
+      setSummary('warn', 'Réponse de Gemini impossible à lire automatiquement. La voici telle quelle :');
       rawEl.hidden = false;
       rawEl.textContent = j.result || '';
       renderApplied(null, 0);
@@ -223,16 +232,14 @@
     const bad = badItems(report).length;
     const unknown = items.filter((it) => it.ok === null).length;
     if (!bad && !unknown) {
-      summaryEl.className = 'yt-summary ok';
-      summaryEl.textContent = items.length === 1
-        ? '✅ Tout est bon : aucune faute dans le titre.'
-        : `✅ Tout est bon : aucune faute dans les ${items.length} titres.`;
+      setSummary('ok', items.length === 1
+        ? 'Tout est bon : aucune faute dans le titre.'
+        : `Tout est bon : aucune faute dans les ${items.length} titres.`);
     } else {
-      summaryEl.className = 'yt-summary warn';
       const parts = [];
       if (bad) parts.push(`${plural(bad, 'titre')} sur ${items.length} à corriger`);
       if (unknown) parts.push(`${plural(unknown, 'titre')} non vérifié${unknown > 1 ? 's' : ''} par Gemini`);
-      summaryEl.textContent = `⚠️ ${parts.join(' · ')}`;
+      setSummary('warn', parts.join(' · '));
     }
     copyAllBtn.hidden = !bad;
     renderApplied(j.applied || null, bad);
@@ -241,14 +248,14 @@
       const li = document.createElement('li');
       if (it.ok === true) {
         li.className = 'yt-item ok';
-        li.append(line('✅', it.original));
+        li.append(line('check', it.original));
       } else if (it.ok === null) {
         li.className = 'yt-item';
-        li.append(line('❔', it.original), note('Gemini n’a pas renvoyé ce titre.'));
+        li.append(line('help', it.original), note('Gemini n’a pas renvoyé ce titre.'));
       } else {
         li.className = 'yt-item bad';
-        li.append(line('❌', highlighted(it.ops, 'o')));
-        const fix = line('→', highlighted(it.ops, 'c'));
+        li.append(line('x', highlighted(it.ops, 'o')));
+        const fix = line('arrow-right', highlighted(it.ops, 'c'));
         fix.classList.add('yt-fix');
         fix.append(copyButton(it.corrected));
         li.append(fix);
@@ -263,7 +270,7 @@
     const report = lastJob && lastJob.report;
     if (!report || !report.parsed) return;
     const ok = await copyToClipboard(report.items.map((it) => it.corrected).join('\n'));
-    copyAllBtn.textContent = ok ? 'Copié ✔' : 'Copie impossible';
+    copyAllBtn.textContent = ok ? 'Copié' : 'Copie impossible';
     setTimeout(() => { copyAllBtn.textContent = 'Copier tous les titres corrigés'; }, 1500);
   });
 

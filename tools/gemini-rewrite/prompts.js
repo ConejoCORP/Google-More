@@ -5,7 +5,7 @@
   const MODES = [
     {
       id: 'fix',
-      icon: '✔️',
+      icon: 'spell',
       label: 'Corriger les fautes',
       hint: 'sans rien changer d’autre',
       instruction:
@@ -16,7 +16,7 @@
     },
     {
       id: 'tone',
-      icon: '✨',
+      icon: 'sparkles',
       label: 'Améliorer mon texte',
       hint: 'en gardant mon ton',
       instruction:
@@ -27,7 +27,7 @@
     },
     {
       id: 'pro',
-      icon: '💼',
+      icon: 'briefcase',
       label: 'Version pro',
       hint: 'plus professionnel',
       instruction:

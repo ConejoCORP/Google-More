@@ -3,13 +3,17 @@
 <head>
   <meta charset="utf-8">
   <title>Google More — banc d'essai du popup</title>
-  <link rel="stylesheet" href="../popup.css">
+  <script>
+    // Anti-cache : le banc d'essai charge toujours la dernière version des fichiers.
+    window.BUST = '?v=' + Date.now();
+    document.write('<link rel="stylesheet" href="../popup.css' + BUST + '">');
+  </script>
 </head>
 <body>
   <script>
     // Banc d'essai : affiche le vrai popup hors extension, avec une fausse API chrome et des données
     // de démonstration. Sert aux tests et aux captures du README (test/screenshots.py).
-    //   http://127.0.0.1:8766/test/popup-harness.html?tab=page|rewrite|titles  (titles = onglet « 🎬 YouTube »)
+    //   http://127.0.0.1:8766/test/popup-harness.html?tab=page|rewrite|titles|password  (titles = onglet « 🎬 YouTube »)
     //   &stale=1 : simule un service worker pas rechargé (il ne répond à aucun message).
     const params = new URLSearchParams(location.search);
     const TAB = params.get('tab') || 'titles';
@@ -89,26 +93,28 @@
 
     const load = (src) => new Promise((ok, ko) => {
       const s = document.createElement('script');
-      s.src = src; s.onload = ok; s.onerror = ko;
+      s.src = src + BUST; s.onload = ok; s.onerror = ko;
       document.body.appendChild(s);
     });
 
     (async () => {
       try { localStorage.setItem('gmPopupTab', TAB); } catch (_) { /* stockage indisponible */ }
-      const html = await fetch('../popup.html').then((r) => r.text());
+      const html = await fetch('../popup.html' + BUST).then((r) => r.text());
       const body = /<body>([\s\S]*)<\/body>/.exec(html)[1].replace(/<script[\s\S]*?<\/script>/g, '');
       document.body.insertAdjacentHTML('afterbegin', body.replace(/src="icons\//g, 'src="../icons/'));
       await load('../tools/version.js');
       await load('../tools/gemini-rewrite/prompts.js');
       await load('../tools/youtube-titles/titles.js');
+      await load('../tools/password/password.js');
       if (DEMO.job && DEMO.job.kind === 'titles') DEMO.job.report = GM_TITLES.parseReport(TITLES_ANSWER, TITLES);
       await load('../popup.js');
       await load('../tools/gemini-rewrite/popup-rewrite.js');
       await load('../tools/youtube-titles/popup-titles.js');
       await load('../tools/youtube-ab/popup-ab.js');
+      await load('../tools/password/popup-password.js');
       showTab(TAB);
       if (TAB === 'page') {
-        setStatus('Copié dans le presse-papier ✔\n11 Ko · ~2 781 tokens\nFichier : Tarte aux pommes — Wikipédia.txt', 'ok');
+        setStatus('Copié dans le presse-papier\n11 Ko · ~2 781 tokens\nFichier : Tarte aux pommes — Wikipédia.txt', 'ok');
       }
       await new Promise((r) => setTimeout(r, 300)); // laisse le pré-remplissage se terminer
       document.title = 'banc prêt';

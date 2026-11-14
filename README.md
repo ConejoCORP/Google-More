@@ -4,7 +4,7 @@
 
 # Google More
 
-Une boîte à outils pour **Opera / Chrome** : enregistre une page en texte léger pour une IA, reformule tes messages avec Gemini, vérifie l'orthographe de tes titres YouTube et repère tes tests A/B terminés dans YouTube Studio.
+Une boîte à outils pour **Opera / Chrome** : enregistre une page en texte léger pour une IA, reformule tes messages avec Gemini, vérifie l'orthographe de tes titres YouTube, repère tes tests A/B terminés dans YouTube Studio et génère des mots de passe solides.
 
 [**⬇ Télécharger l'extension (.zip)**](https://github.com/StundZow/Google-More/archive/refs/heads/main.zip) · [Installation](#prise-en-main)
 
@@ -14,11 +14,13 @@ Une boîte à outils pour **Opera / Chrome** : enregistre une page en texte lég
 
 ## Ce que ça fait
 
-Google More regroupe dans un seul popup les petits outils qui manquent au navigateur quand on travaille avec une IA et sur YouTube. Chaque catégorie a son onglet : **📄 Page → TXT**, **✍️ Reformuler** et **🎬 YouTube**.
+Google More regroupe dans un seul popup les petits outils qui manquent au navigateur quand on travaille avec une IA et sur YouTube. Chaque catégorie a son onglet : **Page → TXT**, **Reformuler**, **YouTube** et **Mots de passe**. L'interface est sobre, en gris anthracite, et passe en thème sombre avec celui de Windows.
 
 Un clic sur **SAVE to TXT** enregistre tout le contenu utile de la page dans un `.txt` nommé d'après le titre de l'onglet, et le copie dans le presse-papier, prêt à coller dans ChatGPT, Claude ou Gemini. **Reformuler** et la vérification des titres envoient ton texte à **Gemini** avec le bon prompt, sans clé d'API : l'extension pilote ta propre session et te rend directement la réponse.
 
 Dans **YouTube Studio**, un panneau apparaît en haut de la page Contenu dès qu'un test A/B est terminé, avec un bouton qui t'emmène droit sur les résultats pour choisir la version gagnante.
+
+Et quand il te faut un mot de passe, l'onglet **Mots de passe** en génère un aussitôt, comme le générateur de Dashlane, à copier en un clic.
 
 ## Pourquoi pas juste copier-coller dans une IA ?
 
@@ -37,11 +39,15 @@ Parce que le HTML d'une page est énorme et plein de bruit : la page d'achat de 
 - 🧪 **Tests A/B terminés** — panneau en haut de la page Contenu de YouTube Studio, avec pour chaque vidéo un bouton **Voir les résultats** qui ouvre ses statistiques et encadre la carte « Test A/B »
 - 🙈 **Masquer les tests déjà traités** — YouTube garde la mention « Test A/B terminé » après ton choix : un clic la retire du panneau, avec **Annuler** juste après
 - 🔄 **Bandeau « Recharger l'extension »** quand le code a été mis à jour mais pas rechargé
+- 🔑 **Générateur de mots de passe** — de 4 à 40 caractères, lettres, chiffres, symboles, avec ou sans caractères semblables (0O 1l|), robustesse affichée et copie en un clic
+- ⚙️ **Paramètres** (bouton en haut à droite du popup) — masquer le bandeau des tests A/B dans YouTube Studio si tu n'en veux pas
 
 <div align="center">
 <img src="screenshots/02_reformuler.png" width="380" alt="Onglet Reformuler avec un texte corrigé">
 &nbsp;&nbsp;
 <img src="screenshots/03_titres-youtube.png" width="380" alt="Onglet YouTube avec le rapport d'orthographe des titres et les réglages du panneau des tests A/B">
+&nbsp;&nbsp;
+<img src="screenshots/04_mots-de-passe.png" width="380" alt="Onglet Mots de passe avec un mot de passe généré et sa robustesse">
 </div>
 
 ## Prise en main
@@ -52,7 +58,7 @@ Parce que le HTML d'une page est énorme et plein de bruit : la page d'achat de 
 4. Pour les outils Gemini, connecte-toi une fois à [gemini.google.com](https://gemini.google.com) dans le navigateur.
 5. Clique sur l'icône, choisis l'onglet de l'outil, et c'est parti. Le panneau des tests A/B, lui, s'affiche tout seul sur la page Contenu de YouTube Studio.
 
-*(Tu peux aussi cloner le dépôt avec `git clone https://github.com/StundZow/Google-More.git`. Après une mise à jour du dossier, clique sur ↻ dans la page des extensions ; si tu oublies, le popup affiche un bandeau orange pour le faire à ta place.)*
+*(Tu peux aussi cloner le dépôt avec `git clone https://github.com/StundZow/Google-More.git`. Après une mise à jour du dossier, clique sur ↻ dans la page des extensions ; si tu oublies, le popup affiche un bandeau pour le faire à ta place.)*
 
 ## Comment ça marche
 
@@ -62,7 +68,9 @@ Parce que le HTML d'une page est énorme et plein de bruit : la page d'achat de 
 
 **Le garde-fou des titres** : Gemini renvoie un rapport titre par titre, que l'extension compare mot à mot avec l'original. Un changement de majuscules ou de ponctuation (« .. » → « ... ») n'est jamais compté comme une faute, et la casse d'origine est reportée sur le mot corrigé (« CHER » → « CHERS »). Quand la fenêtre « Tests A/B » de YouTube Studio est ouverte, seuls ses titres sont vérifiés, pas celui de la page derrière.
 
-**Le panneau des tests A/B** lit la liste des vidéos de la page Contenu : chaque ligne marquée « Test A/B terminé » y apparaît, avec sa miniature et sa date. **Voir les résultats** ouvre l'onglet Aperçu des statistiques de la vidéo par la navigation interne de Studio, sans recharger la page, puis fait défiler jusqu'à la carte « Test A/B » et l'encadre : il ne reste qu'à cliquer sur **Gérer le test**. Ctrl+clic ouvre les résultats dans un nouvel onglet. Les vidéos masquées sont retenues par l'extension ; les réglages (activer le panneau, tout réafficher) sont dans l'onglet **🎬 YouTube** du popup.
+**Le panneau des tests A/B** lit la liste des vidéos de la page Contenu : chaque ligne marquée « Test A/B terminé » y apparaît, avec sa miniature et sa date. **Voir les résultats** ouvre l'onglet Aperçu des statistiques de la vidéo par la navigation interne de Studio, sans recharger la page, puis fait défiler jusqu'à la carte « Test A/B » et l'encadre : il ne reste qu'à cliquer sur **Gérer le test**. Ctrl+clic ouvre les résultats dans un nouvel onglet. Les vidéos masquées sont retenues par l'extension ; les réglages (activer le panneau, tout réafficher) sont dans l'onglet **YouTube** du popup.
+
+**Le générateur de mots de passe** tourne entièrement dans le popup : le hasard vient de `crypto.getRandomValues`, le générateur cryptographique du navigateur, avec un tirage par rejet pour qu'aucun caractère ne sorte plus souvent qu'un autre. Chaque type de caractères coché (minuscules, majuscules, chiffres, symboles) apparaît au moins une fois. Seuls les réglages sont retenus ; le mot de passe n'est ni enregistré ni envoyé, et disparaît à la fermeture du popup. La robustesse affichée est l'entropie, longueur × log2(taille de l'alphabet) : un mot de passe de 16 caractères avec tous les types atteint environ 104 bits, « Très fort ».
 
 ## Ce que pèse une page
 
@@ -96,7 +104,7 @@ python -m http.server 8766
 
 - `http://127.0.0.1:8766/test/sample.html` : page piège pour SAVE to TXT (listes, tableaux, formulaires, Shadow DOM, éléments masqués).
 - `http://127.0.0.1:8766/test/gemini-mock.html` : maquette de la page Gemini pour tester `gemini.js` sans rien envoyer.
-- `http://127.0.0.1:8766/test/popup-harness.html?tab=page` (ou `rewrite`, `titles`) : le vrai popup avec des données de démonstration.
+- `http://127.0.0.1:8766/test/popup-harness.html?tab=page` (ou `rewrite`, `titles`, `password`) : le vrai popup avec des données de démonstration.
 
 Pour régénérer les captures de ce README (Edge ou Chrome sans fenêtre, nécessite Pillow) :
 
@@ -114,6 +122,7 @@ python test/screenshots.py
 | `tools/gemini-rewrite/` | Prompts, pilotage de la fenêtre Gemini, onglet Reformuler |
 | `tools/youtube-titles/` | Prompt des titres, comparaison mot à mot, lecture et remplacement des titres |
 | `tools/youtube-ab/` | Panneau des tests A/B terminés dans YouTube Studio, et ses réglages dans le popup |
+| `tools/password/` | Générateur de mots de passe et calcul de robustesse, onglet Mots de passe |
 | `tools/version.js` | Numéro de version du code, comparé entre le popup et le service worker |
 
 **Ajouter un outil** : crée un dossier `tools/<nom-outil>/`, ajoute un bouton dans `.tabs` et une `<section data-panel="…">` dans `popup.html`, branche son script, puis déclare les permissions nécessaires dans `manifest.json`.

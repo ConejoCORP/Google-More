@@ -22,13 +22,14 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "screenshots"
 PORT = 8766
 SCALE = 2           # captures en haute définition (écrans Retina, zoom GitHub)
-WIDTH = 370         # largeur du popup (popup.css)
+WIDTH = 400         # largeur du popup (popup.css)
 HEIGHT = 1100       # hauteur de la fenêtre de capture, recadrée ensuite
 
 SHOTS = [
     ("page", "01_page-to-txt.png"),
     ("rewrite", "02_reformuler.png"),
     ("titles", "03_titres-youtube.png"),
+    ("password", "04_mots-de-passe.png"),
 ]
 
 BROWSERS = [

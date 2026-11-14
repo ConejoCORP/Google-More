@@ -48,7 +48,7 @@
     b.dataset.mode = m.id;
     const ico = document.createElement('span');
     ico.className = 'mode-ico';
-    ico.textContent = m.icon;
+    ico.append(gmIcon(m.icon)); // icône au trait de popup.html (popup.js)
     const txt = document.createElement('span');
     txt.className = 'mode-txt';
     const strong = document.createElement('strong');
@@ -171,7 +171,7 @@
       const copied = j.copied || copiedByPopup.has(j.id);
       resultEl.hidden = false;
       outputEl.textContent = j.result;
-      resultLabelEl.textContent = `${modeById(j.mode).label} · ${copied ? 'copié dans le presse-papier ✔' : 'pas encore copié'}`;
+      resultLabelEl.textContent = `${modeById(j.mode).label} · ${copied ? 'copié dans le presse-papier' : 'pas encore copié'}`;
       setStatus('');
       if (!copied && now - j.finishedAt < AUTO_COPY_MS) {
         copyToClipboard(j.result).then((ok) => {
@@ -189,7 +189,7 @@
   byId('rwCopy').addEventListener('click', async () => {
     const ok = await copyToClipboard(outputEl.textContent);
     if (ok && lastJob) copiedByPopup.add(lastJob.id);
-    resultLabelEl.textContent = ok ? 'Copié dans le presse-papier ✔' : 'Copie impossible';
+    resultLabelEl.textContent = ok ? 'Copié dans le presse-papier' : 'Copie impossible';
   });
 
   byId('rwCancel').addEventListener('click', () => { if (hasChrome) sendMessage({ type: 'gemini-cancel' }); });
@@ -202,7 +202,7 @@
       const label = document.createElement('label');
       label.className = 'prompt-label';
       label.htmlFor = `rwPrompt-${m.id}`;
-      label.textContent = `${m.icon} ${m.label}`;
+      label.textContent = m.label;
       const ta = document.createElement('textarea');
       ta.id = `rwPrompt-${m.id}`;
       ta.rows = 5;

@@ -122,6 +122,21 @@
     return b;
   }
 
+  // Icône au trait (fiole), même style que le popup de l'extension.
+  function flaskIcon() {
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'gm-ab-icon');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    for (const d of ['M9 3h6', 'M10 3v6.5L4.5 19a1.5 1.5 0 0 0 1.3 2.2h12.4a1.5 1.5 0 0 0 1.3-2.2L14 9.5V3', 'M7 15h10']) {
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', d);
+      svg.append(p);
+    }
+    return svg;
+  }
+
   function resultsLink(className, id, text) {
     const a = el('a', className, text);
     a.href = resultsUrl(id);
@@ -163,7 +178,7 @@
     panel.textContent = '';
 
     const head = el('div', 'gm-ab-head');
-    head.append(el('span', 'gm-ab-icon', '🧪'));
+    head.append(flaskIcon());
     const heading = el('div', 'gm-ab-heading');
     heading.append(el('strong', '', shownCount === 0 ? 'Aucun test A/B terminé à consulter'
       : shownCount === 1 ? '1 test A/B terminé à consulter'

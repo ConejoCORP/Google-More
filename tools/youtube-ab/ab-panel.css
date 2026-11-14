@@ -1,4 +1,5 @@
-/* Google More — panneau « Tests A/B terminés » injecté dans YouTube Studio (page Contenu).
+/* Google More — bandeau « Tests A/B terminés » injecté dans YouTube Studio (page Contenu).
+   Sobre et aligné sur Studio : bordure neutre, boutons pilule noirs (blancs en thème sombre).
    Thème clair par défaut, thème sombre quand Studio pose l'attribut dark sur <html>. */
 
 #gm-ab-panel {
@@ -7,15 +8,14 @@
   --gm-muted: #606060;
   --gm-line: #e5e5e5;
   --gm-soft: #f2f2f2;
-  --gm-accent: #065fd4;
+  --gm-accent: #0f0f0f;
   --gm-accent-fg: #ffffff;
-  --gm-frame: #f2c94c;
+  --gm-link: #065fd4;
 
   box-sizing: border-box;
   margin: 12px 0 16px;
-  padding: 12px 14px;
-  border: 1px solid var(--gm-frame);
-  border-left-width: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--gm-line);
   border-radius: 12px;
   background: var(--gm-bg);
   color: var(--gm-fg);
@@ -28,9 +28,9 @@ html[dark] #gm-ab-panel {
   --gm-muted: #aaaaaa;
   --gm-line: #3f3f3f;
   --gm-soft: #2b2b2b;
-  --gm-accent: #3ea6ff;
+  --gm-accent: #f1f1f1;
   --gm-accent-fg: #0f0f0f;
-  --gm-frame: #8a6d1d;
+  --gm-link: #3ea6ff;
 }
 
 #gm-ab-panel * { box-sizing: border-box; }
@@ -40,21 +40,30 @@ html[dark] #gm-ab-panel {
   align-items: center;
   gap: 10px;
 }
-#gm-ab-panel .gm-ab-icon { font-size: 22px; line-height: 1; }
+#gm-ab-panel .gm-ab-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--gm-muted);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 #gm-ab-panel .gm-ab-heading {
   display: flex;
   flex: 1;
   flex-direction: column;
   min-width: 0;
 }
-#gm-ab-panel .gm-ab-heading strong { font-size: 15px; font-weight: 600; }
+#gm-ab-panel .gm-ab-heading strong { font-size: 14px; font-weight: 500; }
 #gm-ab-panel .gm-ab-sub { font-size: 12px; color: var(--gm-muted); }
 
 #gm-ab-panel .gm-ab-list {
   display: grid;
-  gap: 6px;
+  gap: 0;
   max-height: 340px;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   padding: 0;
   overflow: auto;
   list-style: none;
@@ -63,17 +72,16 @@ html[dark] #gm-ab-panel {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  background: var(--gm-soft);
+  padding: 8px 4px;
+  border-top: 1px solid var(--gm-line);
 }
 #gm-ab-panel .gm-ab-item.is-masked { opacity: .55; }
 
 #gm-ab-panel .gm-ab-thumb-link { flex: none; display: block; }
 #gm-ab-panel .gm-ab-thumb {
   display: block;
-  width: 96px;
-  height: 54px;
+  width: 88px;
+  height: 50px;
   border-radius: 6px;
   background: #000;
   object-fit: cover;
@@ -107,7 +115,7 @@ html[dark] #gm-ab-panel {
   text-decoration: none;
   white-space: nowrap;
 }
-#gm-ab-panel .gm-ab-open:hover { filter: brightness(1.08); }
+#gm-ab-panel .gm-ab-open:hover { opacity: .85; }
 
 #gm-ab-panel .gm-ab-btn {
   flex: none;
@@ -120,14 +128,14 @@ html[dark] #gm-ab-panel {
   font-size: 12px;
   cursor: pointer;
 }
-#gm-ab-panel .gm-ab-btn:hover { background: var(--gm-line); }
+#gm-ab-panel .gm-ab-btn:hover { background: var(--gm-soft); }
 
 #gm-ab-panel .gm-ab-link {
   flex: none;
   padding: 0;
   border: 0;
   background: none;
-  color: var(--gm-accent);
+  color: var(--gm-link);
   font: inherit;
   font-size: 12px;
   cursor: pointer;
